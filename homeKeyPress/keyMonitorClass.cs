@@ -12,6 +12,9 @@ using System.Windows.Input;
 
 namespace homeKeyPress
 {
+    /// <summary>
+    /// 
+    /// </summary>
     class keyMonitorClass : IDisposable
     {
         internal bool homeEndDetection;
