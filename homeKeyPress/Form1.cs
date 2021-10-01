@@ -1,10 +1,19 @@
-﻿using Microsoft.Win32;
+﻿/// <summary>
+/// Author  : Marcin Kaminski (https://github.com/marcin2048)
+/// 
+/// Date    :   2021-10-01
+/// 
+/// Simple app that starts when logged in, and automaticaly start key detection routine
+/// 
+/// </summary>
+
+
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-
 namespace homeKeyPress
 {
 
@@ -15,6 +24,7 @@ namespace homeKeyPress
 
         private keyMonitorClass keyMonitor;
         private int iconNo;
+        // variable to auto hide application
         bool firstRun = true;
   
 
@@ -28,12 +38,6 @@ namespace homeKeyPress
             keyMonitor.setHomeEndDetection(true);
             //
             iconNo = 0;
-            //minimize
-            //
-            //this.WindowState = FormWindowState.Minimized;
-            //this.ShowInTaskbar = false;
-            //this.Hide();
-
 
         }
 
@@ -50,7 +54,9 @@ namespace homeKeyPress
         }
 
 
-
+        /// <summary>
+        /// Procedure to update icon in systray.
+        /// </summary>
         private void updateIcon()
         {
             bool onoff = keyMonitor.homeEndDetection;
@@ -94,10 +100,8 @@ namespace homeKeyPress
         }
 
         /// <summary>
-        /// Application HIDE
+        /// Application HIDE procedure
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void button3_Click(object sender, EventArgs e)
         {
             //hide!
@@ -129,6 +133,9 @@ namespace homeKeyPress
             this.Close();
         }
 
+        /// <summary>
+        /// Cycle routine to change icon color
+        /// </summary>
         private void timer1_Tick(object sender, EventArgs e)
         {
             updateIcon();
@@ -137,11 +144,7 @@ namespace homeKeyPress
         private void button4_Click(object sender, EventArgs e)
         {
             RegistryKey rk = Registry.CurrentUser.OpenSubKey  ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            
-//            if (chkStartUp.Checked)
-                rk.SetValue("homeKeyPressApp", Application.ExecutablePath);
-//            else
-//                rk.DeleteValue(AppName, false);
+            rk.SetValue("homeKeyPressApp", Application.ExecutablePath);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -155,6 +158,13 @@ namespace homeKeyPress
                 firstRun = false;
                 this.Hide();
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            rk.DeleteValue("homeKeyPressApp", false);
+
         }
     }
 }

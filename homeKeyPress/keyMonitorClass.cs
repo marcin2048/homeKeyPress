@@ -1,4 +1,16 @@
-﻿using System;
+﻿/// <summary>
+/// Author  : Marcin Kaminski (https://github.com/marcin2048)
+/// 
+/// Date    :   2021-10-01
+/// 
+/// Key detect class
+/// based on : https://stackoverflow.com/questions/604410/global-keyboard-capture-in-c-sharp-application (Siarhei Kuchuk)
+/// 
+/// 
+/// </summary>
+
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,7 +25,7 @@ using System.Windows.Input;
 namespace homeKeyPress
 {
     /// <summary>
-    /// 
+    /// Main class that connects to keyboard press event
     /// </summary>
     class keyMonitorClass : IDisposable
     {
@@ -22,11 +34,14 @@ namespace homeKeyPress
         private IntPtr _user32LibraryHandle;
         private HookProc _hookProc;
         private DateTime lastCtrlPressed;
-        private int keyPressTime = 5;
+        // time amount to wait for arrow key
+        private int keyPressTimeout = 5;
+        // counter to define if this is first press after CTRL release or not
         private int keyPressCnt = 0;
+        /// check if ctrl was released
         private bool ctrlReleaseMonitor = true;
 
-        //
+        
         public const int WH_KEYBOARD_LL = 13;
         public enum KeyboardState
         {
@@ -70,19 +85,9 @@ namespace homeKeyPress
             public IntPtr AdditionalInformation;
         }
 
+               
 
 
-
-
-
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="lpFileName"></param>
-        /// <returns></returns>
-        //
         [DllImport("kernel32.dll")]
         private static extern IntPtr LoadLibrary(string lpFileName);
 
@@ -188,7 +193,7 @@ namespace homeKeyPress
 
         public bool ctrlDetectoinActive()
         {
-            if (DateTime.Now.Subtract(lastCtrlPressed).Seconds < keyPressTime) return true;
+            if (DateTime.Now.Subtract(lastCtrlPressed).Seconds < keyPressTimeout) return true;
             return false;
 
         }
@@ -214,7 +219,7 @@ namespace homeKeyPress
 
                 if (homeEndDetection)
                 {
-                    if (DateTime.Now.Subtract(lastCtrlPressed).Seconds > keyPressTime)
+                    if (DateTime.Now.Subtract(lastCtrlPressed).Seconds > keyPressTimeout)
                     {
                         if (Keyboard.IsKeyUp(Key.LeftCtrl))
                         {
@@ -226,14 +231,14 @@ namespace homeKeyPress
                     //detekcja wcisniecia przycisku CTRL
                     if (key == Keys.LControlKey)
                     {
-                        if ((DateTime.Now.Subtract(lastCtrlPressed).Seconds > keyPressTime) && (ctrlReleaseMonitor))
+                        if ((DateTime.Now.Subtract(lastCtrlPressed).Seconds > keyPressTimeout) && (ctrlReleaseMonitor))
                         {
                             lastCtrlPressed = DateTime.Now;
                             keyPressCnt = 0;
                         }
                     }
                     //detekcja wcisniecia dowolnego innego klawisza w obserwowanym czasie
-                    if (DateTime.Now.Subtract(lastCtrlPressed).Seconds < keyPressTime)
+                    if (DateTime.Now.Subtract(lastCtrlPressed).Seconds < keyPressTimeout)
                     {
                         if (key != Keys.LControlKey)
                         {
@@ -251,7 +256,7 @@ namespace homeKeyPress
                     //logika detekcji wcisniecia strzalki po ctrl
                     if (Keyboard.IsKeyUp(Key.LeftCtrl))
                     {
-                        if ((DateTime.Now.Subtract(lastCtrlPressed).Seconds < keyPressTime)&&(keyPressCnt==1))
+                        if ((DateTime.Now.Subtract(lastCtrlPressed).Seconds < keyPressTimeout)&&(keyPressCnt==1))
                         {
 
                             switch (key)
