@@ -9,5 +9,5 @@ to make HOME / END action.
 To send HOME:
 CTRL DOWN, CTRL UP, Left Arrow Down
 
-TO send END:
+To send END:
 CTRL DOWN, CTRL UP, Right Arrow Down
